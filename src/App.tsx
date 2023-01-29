@@ -1,25 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
+import { loginStateAtom } from "./atom";
+import { fbAuth } from "./firebase";
+import Router from "./router";
 
 function App() {
+  const [fbInit, setFbInit] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(loginStateAtom);
+
+  useEffect(() => {
+    onAuthStateChanged(fbAuth, (user) => {
+      setIsLoggedIn(user ? true : false);
+      setFbInit(true);
+    });
+  }, []);
+
+  console.log("LOGGEDIN:::", isLoggedIn);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      {fbInit ? <Router isLoggedIn={isLoggedIn} /> : <div>Init...</div>}
+      <footer>Footer!</footer>
+    </>
   );
 }
 
