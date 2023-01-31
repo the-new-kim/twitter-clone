@@ -1,7 +1,7 @@
 import { User } from "firebase/auth";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { userAtom } from "./atoms";
+import { meAtom } from "./atoms";
 import Layout from "./Layout";
 import Auth from "./routes/Auth";
 import Home from "./routes/Home";
@@ -36,11 +36,11 @@ const router = (isLoggedIn: boolean) => {
 };
 
 export default function Router() {
-  const user = useRecoilValue(userAtom);
+  const me = useRecoilValue(meAtom);
 
   return (
     <>
-      <RouterProvider router={router(user?.uid ? true : false)} />
+      <RouterProvider router={router(me?.uid ? true : false)} />
     </>
   );
 }

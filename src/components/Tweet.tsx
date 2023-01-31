@@ -1,10 +1,9 @@
-import { async } from "@firebase/util";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRecoilValue } from "recoil";
-import { userAtom } from "../atoms";
+import { meAtom } from "../atoms";
 import { firebaseDB, firebaseStorage } from "../firebase";
 import { ITweetForm, ITweetObject } from "../routes/Home";
 
@@ -14,8 +13,8 @@ export default function Tweet({
   id,
   attachmentUrl,
 }: ITweetObject) {
-  const user = useRecoilValue(userAtom);
-  const isOwner = user?.uid === creatorId;
+  const me = useRecoilValue(meAtom);
+  const isOwner = me?.uid === creatorId;
   const [editing, setEditing] = useState(false);
 
   const onDeleteClick = async () => {

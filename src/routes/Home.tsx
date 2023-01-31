@@ -10,7 +10,7 @@ import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRecoilValue } from "recoil";
-import { userAtom } from "../atoms";
+import { meAtom } from "../atoms";
 import Tweet from "../components/Tweet";
 import { firebaseDB, firebaseStorage } from "../firebase";
 import { v4 as uuidv4 } from "uuid";
@@ -28,7 +28,7 @@ export interface ITweetObject extends ITweetForm {
 }
 
 export default function Home() {
-  const user = useRecoilValue(userAtom);
+  const me = useRecoilValue(meAtom);
   const [tweets, setTweets] = useState<ITweetObject[]>([]);
   const [attachment, setAttachment] = useState<string | null>(null);
 
@@ -96,12 +96,12 @@ export default function Home() {
   } = useForm<ITweetForm>();
 
   const onSubmit = async ({ text }: ITweetForm) => {
-    if (!user?.uid) return;
+    if (!me?.uid) return;
 
     let attachmentUrl = null;
 
     if (attachment) {
-      const fileRef = ref(firebaseStorage, `${user.uid}/${uuidv4()}`);
+      const fileRef = ref(firebaseStorage, `${me.uid}/${uuidv4()}`);
 
       console.log("FILE REF:::", fileRef);
 
@@ -117,7 +117,7 @@ export default function Home() {
     await addDoc(collection(firebaseDB, "tweets"), {
       text,
       createdAt: Date.now(),
-      creatorId: user.uid,
+      creatorId: me.uid,
       attachmentUrl,
     });
     setAttachment(null);

@@ -1,16 +1,16 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { userAtom } from "./atoms";
+import { meAtom } from "./atoms";
 import Footer from "./components/Footer";
 import Navigation from "./components/Navigation";
 
 export default function Layout() {
-  const user = useRecoilValue(userAtom);
+  const me = useRecoilValue(meAtom);
 
   return (
     <>
-      {user?.uid && <Navigation />}
+      {me?.uid && <Navigation />}
       <Suspense>
         <Outlet />
       </Suspense>
