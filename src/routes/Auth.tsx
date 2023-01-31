@@ -7,7 +7,7 @@ import {
 } from "firebase/auth";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { fbAuth } from "../firebase";
+import { firebaseAuth } from "../firebase";
 
 interface IAuthForm {
   email: string;
@@ -26,9 +26,9 @@ export default function Auth() {
   const onSubmit = async ({ email, password }: IAuthForm) => {
     try {
       if (newAccount) {
-        await createUserWithEmailAndPassword(fbAuth, email, password);
+        await createUserWithEmailAndPassword(firebaseAuth, email, password);
       } else {
-        await signInWithEmailAndPassword(fbAuth, email, password);
+        await signInWithEmailAndPassword(firebaseAuth, email, password);
       }
     } catch (error) {
       console.log("ERROR:::", error);
@@ -46,8 +46,8 @@ export default function Auth() {
 
     if (!provider) return;
 
-    const reault = await signInWithPopup(fbAuth, provider);
-    console.log(reault);
+    const result = await signInWithPopup(firebaseAuth, provider);
+    console.log(result);
   };
 
   return (

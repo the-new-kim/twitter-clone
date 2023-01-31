@@ -1,31 +1,24 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
-import { loginStateAtom } from "./atom";
-import { fbAuth } from "./firebase";
+import { useSetRecoilState } from "recoil";
+import { userAtom } from "./atoms";
+import { firebaseAuth } from "./firebase";
 import Router from "./router";
 
 function App() {
-  const [fbInit, setFbInit] = useState(false);
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [firebaseInit, setFirebaseInit] = useState(false);
 
-  const [isLoggedIn, setIsLoggedIn] = useRecoilState(loginStateAtom);
+  const setUser = useSetRecoilState(userAtom);
 
   useEffect(() => {
-    onAuthStateChanged(fbAuth, (user) => {
-      setIsLoggedIn(user ? true : false);
-      setFbInit(true);
+    onAuthStateChanged(firebaseAuth, (user) => {
+      const userCopy = JSON.parse(JSON.stringify(user)); //https://github.com/firebase/firebase-js-sdk/issues/5722 📝 Firebase Recoil Issue...
+      setUser(userCopy);
+      setFirebaseInit(true);
     });
   }, []);
 
-  console.log("LOGGEDIN:::", isLoggedIn);
-
-  return (
-    <>
-      {fbInit ? <Router isLoggedIn={isLoggedIn} /> : <div>Init...</div>}
-      <footer>Footer!</footer>
-    </>
-  );
+  return <>{firebaseInit ? <Router /> : <div>Init...</div>}</>;
 }
 
 export default App;

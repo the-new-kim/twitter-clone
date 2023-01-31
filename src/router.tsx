@@ -1,12 +1,7 @@
-import { useState } from "react";
-import {
-  BrowserRouter,
-  createBrowserRouter,
-  Route,
-  RouterProvider,
-  Routes,
-} from "react-router-dom";
-import Navigation from "./components/Navigation";
+import { User } from "firebase/auth";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { userAtom } from "./atoms";
 import Layout from "./Layout";
 import Auth from "./routes/Auth";
 import Home from "./routes/Home";
@@ -40,14 +35,12 @@ const router = (isLoggedIn: boolean) => {
   ]);
 };
 
-interface IRouterProps {
-  isLoggedIn: boolean;
-}
+export default function Router() {
+  const user = useRecoilValue(userAtom);
 
-export default function Router({ isLoggedIn }: IRouterProps) {
   return (
     <>
-      <RouterProvider router={router(isLoggedIn)} />
+      <RouterProvider router={router(user?.uid ? true : false)} />
     </>
   );
 }
