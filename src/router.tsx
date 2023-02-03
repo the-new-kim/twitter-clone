@@ -40,7 +40,7 @@ export default function Router() {
 
   return (
     <>
-      <RouterProvider router={router(me?.uid ? true : false)} />
+      <RouterProvider router={router(me ? true : false)} />
     </>
   );
 }

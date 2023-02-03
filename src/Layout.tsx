@@ -10,7 +10,7 @@ export default function Layout() {
 
   return (
     <>
-      {me?.uid && <Navigation />}
+      {me && <Navigation />}
       <Suspense>
         <Outlet />
       </Suspense>

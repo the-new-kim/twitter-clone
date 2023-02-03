@@ -41,20 +41,19 @@ export default function Profile() {
     const q = query(
       collection(firebaseDB, "tweets"),
       where("creatorId", "==", me?.uid),
-      orderBy("createdAt")
+      orderBy("createdAt", "desc")
     );
 
     try {
       const querySnapshot = await getDocs(q);
 
-      querySnapshot.forEach((doc) => {
-        const tweetObject = {
+      const myTweets = querySnapshot.docs.map((doc) => {
+        return {
           ...doc.data(),
           id: doc.id,
         } as ITweetObject;
-
-        setTweets((prev) => [tweetObject, ...prev]);
       });
+      setTweets(myTweets);
     } catch (error) {
       console.log(error);
     }
@@ -66,20 +65,16 @@ export default function Profile() {
     const q = query(
       collection(firebaseDB, "tweets"),
       where("creatorId", "==", me?.uid),
-      orderBy("createdAt")
+      orderBy("createdAt", "desc")
     );
 
     onSnapshot(q, {
       next: (snapshot) => {
-        let newTweets: ITweetObject[] = [];
-
-        snapshot.forEach((doc) => {
-          const tweetObject = {
+        let newTweets = snapshot.docs.map((doc) => {
+          return {
             ...doc.data(),
             id: doc.id,
           } as ITweetObject;
-
-          newTweets = [tweetObject, ...newTweets];
         });
 
         setTweets(newTweets);
@@ -95,7 +90,7 @@ export default function Profile() {
     });
 
     const { currentUser } = firebaseAuth;
-    console.log(currentUser);
+
     setMe({
       displayName: currentUser.displayName,
       email: currentUser.email,

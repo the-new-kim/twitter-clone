@@ -12,17 +12,22 @@ function App() {
 
   useEffect(() => {
     onAuthStateChanged(firebaseAuth, (user) => {
-      const userCopy = JSON.parse(JSON.stringify(user)) as User; //https://github.com/firebase/firebase-js-sdk/issues/5722 📝 Firebase Recoil Issue...
+      if (user) {
+        const userCopy = JSON.parse(JSON.stringify(user)) as User; //https://github.com/firebase/firebase-js-sdk/issues/5722 📝 Firebase Recoil Issue...
 
-      const me: IMe = {
-        uid: userCopy.uid,
-        displayName: userCopy.displayName,
-        photoURL: userCopy.photoURL,
-        email: userCopy.email,
-        phoneNumber: userCopy.phoneNumber,
-      };
+        const me: IMe = {
+          uid: userCopy.uid,
+          displayName: userCopy.displayName,
+          photoURL: userCopy.photoURL,
+          email: userCopy.email,
+          phoneNumber: userCopy.phoneNumber,
+        };
 
-      setMe(me);
+        setMe(me);
+      } else {
+        setMe(null);
+      }
+
       setFirebaseInit(true);
     });
   }, []);

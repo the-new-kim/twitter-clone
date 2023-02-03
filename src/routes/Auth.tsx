@@ -1,42 +1,9 @@
-import { async } from "@firebase/util";
-import {
-  createUserWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-} from "firebase/auth";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+
+import AuthForm from "../components/AuthForm";
 import { firebaseAuth } from "../firebase";
 
-interface IAuthForm {
-  email: string;
-  password: string;
-}
-
 export default function Auth() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IAuthForm>();
-
-  const [newAccount, setNewAccount] = useState(true);
-
-  const onSubmit = async ({ email, password }: IAuthForm) => {
-    try {
-      if (newAccount) {
-        await createUserWithEmailAndPassword(firebaseAuth, email, password);
-      } else {
-        await signInWithEmailAndPassword(firebaseAuth, email, password);
-      }
-    } catch (error) {
-      console.log("ERROR:::", error);
-    }
-  };
-
-  const toggleAccount = () => setNewAccount((prev) => !prev);
-
   const onSocialClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     const { name } = event.target as HTMLButtonElement;
     let provider;
@@ -46,25 +13,12 @@ export default function Auth() {
 
     if (!provider) return;
 
-    const result = await signInWithPopup(firebaseAuth, provider);
-    console.log(result);
+    await signInWithPopup(firebaseAuth, provider);
   };
 
   return (
     <div>
-      <h1>AUTH</h1>
-      <button onClick={toggleAccount}>
-        {newAccount ? "sign in" : "create account"}
-      </button>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input type="email" {...register("email", { required: true })} />
-        <input type="password" {...register("password", { required: true })} />
-        <input
-          type="submit"
-          value={newAccount ? "create account" : "sign in"}
-        />
-      </form>
-
+      <AuthForm />
       <button onClick={onSocialClick} name="google">
         Google Login
       </button>

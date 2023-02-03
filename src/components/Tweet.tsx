@@ -6,6 +6,7 @@ import { useRecoilValue } from "recoil";
 import { meAtom } from "../atoms";
 import { firebaseDB, firebaseStorage } from "../firebase";
 import { ITweetForm, ITweetObject } from "../routes/Home";
+import TweetForm from "./TweetForm";
 
 export default function Tweet({
   text,
@@ -28,42 +29,24 @@ export default function Tweet({
     }
   };
 
-  //   const onUpdateClick = async () => {
-  //     await updateDoc(doc(firebaseDB,"tweets", id),{text})
-  //   }
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<ITweetForm>();
-
-  const onSubmit = async ({ text }: ITweetForm) => {
-    await updateDoc(doc(firebaseDB, "tweets", id), {
-      text,
-    });
-    reset();
-    setEditing(false);
-  };
-
   const toggleEditing = () => {
     setEditing((prev) => !prev);
   };
 
   return (
     <li>
-      {attachmentUrl && <img src={attachmentUrl} width={100} />}
+      {!editing && attachmentUrl && <img src={attachmentUrl} width={100} />}
       {editing ? (
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <input
-            type="text"
-            defaultValue={text}
-            {...register("text", { required: true, maxLength: 150 })}
-          />
-          <input type="submit" />
-        </form>
+        <TweetForm defaultValue={{ text, id, attachmentUrl, setEditing }} />
       ) : (
+        // <form onSubmit={handleSubmit(onSubmit)}>
+        //   <input
+        //     type="text"
+        //     defaultValue={text}
+        //     {...register("text", { required: true, maxLength: 150 })}
+        //   />
+        //   <input type="submit" />
+        // </form>
         text
       )}
       <div>
